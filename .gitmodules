@@ -1,0 +1,6 @@
+[submodule "city-permit-reviewer"]
+	path = city-permit-reviewer
+	url = git@github.com:dyf102/city-permit-reviewer.git
+[submodule "city-permit-check"]
+	path = city-permit-check
+	url = git@github.com:dyf102/toronto-permit-pulse.git
