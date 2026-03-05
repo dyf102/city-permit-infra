@@ -10,11 +10,11 @@
 - [x] Renamed root branch from master to main for consistency [Small/Low] (Completed: 2026-03-05)
 - [ ] Execute Migration Plan [Medium/Medium] (In-Progress: 2026-03-04)
     - [x] Phase 1: Infrastructure Preparation (Completed: 2026-03-04)
-    - [ ] Phase 1.5: Pre-Migration DNS & Compatibility Verification (TTL 60s)
+    - [x] Phase 1.5: Pre-Migration DNS & Compatibility Verification (Completed: 2026-03-05)
     - [ ] Phase 2: Reviewer Migration (Data Integrity row count checks)
     - [ ] Phase 3: Check Migration (GCP to AWS + DNS Switch)
     - [ ] Phase 4: Final Validation & GCP Decommissioning (Created: 2026-03-04)
-- [ ] Stabilize Application Deployments [Medium/Medium] (In-Progress: 2026-03-04)
+- [x] Stabilize Application Deployments [Medium/Medium] (Completed: 2026-03-05)
     - [x] CloudFront Path-Based Routing Configured
     - [x] Amplify Check App Build SUCCEEDED
     - [x] Backend Check Deploy SUCCEEDED
@@ -22,9 +22,16 @@
     - [x] Backend Reviewer Deploy (Completed: 2026-03-05 — SSM migration done, Lambda active, API Gateway verified)
     - [x] OIDC Trust Policy Fixed for toronto-permit-pulse repo
     - [x] CI Pipeline Fixed (Completed: 2026-03-05 — .eslintrc.json committed, stale deploy job removed)
+    - [x] CORS Fix for toronto subdomain (Completed: 2026-03-05)
 
 ## Completed
-*(None yet)*
+- [x] Shared Infrastructure Design
+- [x] Migration & Deployment Plans
+- [x] Environment Cleanup (Phase 0)
+- [x] Shared Terraform Project Implementation
+- [x] Infrastructure Preparation (Phase 1)
+- [x] Pre-Migration DNS & Compatibility Verification (Phase 1.5)
+- [x] Application Deployment Stabilization (CORS fixes, CI/CD, OIDC)
 
 ## Technical Debt / Backlog
 - [ ] Test Stripe Payment integration in AWS production [Medium/Medium]
