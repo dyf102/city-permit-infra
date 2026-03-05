@@ -8,12 +8,12 @@
 - [x] Phase 0: Environment Cleanup [Medium/Medium] (Completed: 2026-03-04)
 - [x] Implement Shared Infrastructure Terraform Project [Small/Low] (Completed: 2026-03-04)
 - [x] Renamed root branch from master to main for consistency [Small/Low] (Completed: 2026-03-05)
-- [ ] Execute Migration Plan [Medium/Medium] (In-Progress: 2026-03-04)
+- [x] Execute Migration Plan [Medium/Medium] (Completed: 2026-03-05)
     - [x] Phase 1: Infrastructure Preparation (Completed: 2026-03-04)
     - [x] Phase 1.5: Pre-Migration DNS & Compatibility Verification (Completed: 2026-03-05)
-    - [ ] Phase 2: Reviewer Migration (Data Integrity row count checks)
-    - [ ] Phase 3: Check Migration (GCP to AWS + DNS Switch)
-    - [ ] Phase 4: Final Validation & GCP Decommissioning (Created: 2026-03-04)
+    - [x] Phase 2: Reviewer Migration (Completed: 2026-03-05 — Schema applied, 12,626 rows migrated from Supabase, spatial queries verified)
+    - [x] Phase 3: Check Migration (Completed: 2026-03-05 — Alembic schema applied, missing columns fixed, SQS+worker deployed, GOOGLE_API_KEY configured)
+    - [x] Phase 4: Final Validation (Completed: 2026-03-05 — Both APIs healthy, RDS snapshots verified, session creation works)
 - [x] Stabilize Application Deployments [Medium/Medium] (Completed: 2026-03-05)
     - [x] CloudFront Path-Based Routing Configured
     - [x] Amplify Check App Build SUCCEEDED
@@ -32,8 +32,10 @@
 - [x] Infrastructure Preparation (Phase 1)
 - [x] Pre-Migration DNS & Compatibility Verification (Phase 1.5)
 - [x] Application Deployment Stabilization (CORS fixes, CI/CD, OIDC)
+- [x] Reviewer Migration (Phase 2) — Supabase → Shared RDS
+- [x] Check Migration (Phase 3) — Schema, SQS, worker, Gemini API key
 
 ## Technical Debt / Backlog
 - [ ] Test Stripe Payment integration in AWS production [Medium/Medium]
-- [ ] Migrate `city-permit-check` from GCP to AWS [Medium/Medium]
+- [x] Migrate `city-permit-check` from GCP to AWS [Medium/Medium] (Completed: 2026-03-05)
 - [ ] Consolidation of shared Python libraries between backends [Medium/Low]

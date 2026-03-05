@@ -30,7 +30,8 @@ module "check" {
   domain_name         = var.domain_name
   github_repo         = var.github_repo_check
   github_access_token = var.github_access_token
-  platform            = "WEB" # Check is already static
+  platform            = "WEB"
+  gemini_api_key      = var.gemini_api_key
 }
 
 module "bootstrap_lambda" {
