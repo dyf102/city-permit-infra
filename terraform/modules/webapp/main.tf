@@ -40,10 +40,61 @@ variable "github_access_token" {
   sensitive = true
 }
 
+variable "platform" {
+  type    = string
+  default = "WEB"
+}
+
+locals {
+  # Monorepo format for Next.js SSR (WEB_COMPUTE)
+  build_spec_compute = <<-EOT
+    version: 1
+    applications:
+      - frontend:
+          phases:
+            preBuild:
+              commands:
+                - npm install
+            build:
+              commands:
+                - npm run build
+          artifacts:
+            baseDirectory: .next
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - node_modules/**/*
+        appRoot: frontend
+  EOT
+
+  # Monorepo format for Static Export (WEB)
+  build_spec_static = <<-EOT
+    version: 1
+    applications:
+      - frontend:
+          phases:
+            preBuild:
+              commands:
+                - npm install
+            build:
+              commands:
+                - npm run build
+          artifacts:
+            baseDirectory: out
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - node_modules/**/*
+        appRoot: frontend
+  EOT
+}
+
 # 1. ECR Repository
 resource "aws_ecr_repository" "app" {
   name                 = "${var.app_name}-backend-${var.environment}"
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
   force_delete         = true
 
   image_scanning_configuration {
@@ -194,21 +245,11 @@ resource "aws_iam_role_policy" "ssm" {
 }
 
 # 4. Lambda Function
-data "archive_file" "dummy" {
-  type        = "zip"
-  output_path = "${path.module}/dummy_${var.app_name}.zip"
-  source {
-    content  = "def handler(event, context): return {'statusCode': 200, 'body': 'Initial Provisioning'}"
-    filename = "index.py"
-  }
-}
-
 resource "aws_lambda_function" "app" {
   function_name = "${var.app_name}-api-${var.environment}"
   role          = aws_iam_role.lambda.arn
-  handler       = "index.handler"
-  runtime       = "python3.11"
-  filename      = data.archive_file.dummy.output_path
+  package_type  = "Image"
+  image_uri     = "${aws_ecr_repository.app.repository_url}:latest"
   
   timeout       = 28
   memory_size   = 512
@@ -223,11 +264,12 @@ resource "aws_lambda_function" "app" {
     variables = {
       ENVIRONMENT    = var.environment
       S3_BUCKET_NAME = aws_s3_bucket.assets.id
+      DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
     }
   }
 
   lifecycle {
-    ignore_changes = [filename, handler, runtime, image_uri, package_type]
+    ignore_changes = [image_uri]
   }
 }
 
@@ -299,37 +341,33 @@ resource "aws_amplify_app" "app" {
   name       = "${var.app_name}-frontend"
   repository = "https://github.com/${var.github_repo}"
   access_token = var.github_access_token
+  
+  platform = var.platform
 
-  build_spec = <<-EOT
-    version: 1
-    applications:
-      - frontend:
-          phases:
-            preBuild:
-              commands:
-                - cd frontend && npm ci
-            build:
-              commands:
-                - cd frontend && npm run build
-          artifacts:
-            baseDirectory: frontend/.next
-            files:
-              - '**/*'
-          cache:
-            paths:
-              - frontend/node_modules/**/*
-        appRoot: frontend
-  EOT
+  build_spec = var.platform == "WEB_COMPUTE" ? local.build_spec_compute : local.build_spec_static
 
   environment_variables = {
     NEXT_PUBLIC_API_URL = aws_api_gateway_stage.prod.invoke_url
+    AMPLIFY_MONOREPO_APP_ROOT = "frontend"
+    AMPLIFY_DIFF_DEPLOY = "false"
+  }
+
+  custom_rule {
+    source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}/<*>"
+    target = "/<*>"
+    status = "200"
+  }
+
+  custom_rule {
+    source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}"
+    target = "/index.html"
+    status = "200"
   }
 }
 
 resource "aws_amplify_branch" "main" {
   app_id      = aws_amplify_app.app.id
   branch_name = "main"
-  framework   = "Next.js - SSR"
   stage       = "PRODUCTION"
 }
 
@@ -346,5 +384,5 @@ output "amplify_app_id" {
 }
 
 output "amplify_default_domain" {
-  value = aws_amplify_app.app.default_domain
+  value = "main.${aws_amplify_app.app.default_domain}"
 }

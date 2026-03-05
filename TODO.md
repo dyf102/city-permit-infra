@@ -7,15 +7,20 @@
 - [x] Scaffolding Shared Terraform Project [Small/Low] (Completed: 2026-03-04)
 - [x] Phase 0: Environment Cleanup [Medium/Medium] (Completed: 2026-03-04)
 - [x] Implement Shared Infrastructure Terraform Project [Small/Low] (Completed: 2026-03-04)
-- [ ] Execute Migration Plan [Medium/Medium] (Created: 2026-03-04)
+- [ ] Execute Migration Plan [Medium/Medium] (In-Progress: 2026-03-04)
     - [x] Phase 1: Infrastructure Preparation (Completed: 2026-03-04)
     - [ ] Phase 1.5: Pre-Migration DNS & Compatibility Verification (TTL 60s)
     - [ ] Phase 2: Reviewer Migration (Data Integrity row count checks)
     - [ ] Phase 3: Check Migration (GCP to AWS + DNS Switch)
     - [ ] Phase 4: Final Validation & GCP Decommissioning (Created: 2026-03-04)
-        - [ ] Load/Smoke testing against production
-        - [ ] Verify successful RDS automated backup execution
-        - [ ] Formal GCP teardown (7 days post-migration)
+- [ ] Stabilize Application Deployments [Medium/Medium] (In-Progress: 2026-03-04)
+    - [x] CloudFront Path-Based Routing Configured
+    - [x] Amplify Check App Build SUCCEEDED
+    - [x] Backend Check Deploy SUCCEEDED
+    - [x] Amplify Reviewer App Build SUCCEEDED
+    - [x] Backend Reviewer Deploy (Completed: 2026-03-05 — SSM migration done, Lambda active, API Gateway verified)
+    - [x] OIDC Trust Policy Fixed for toronto-permit-pulse repo
+    - [x] CI Pipeline Fixed (Completed: 2026-03-05 — .eslintrc.json committed, stale deploy job removed)
 
 ## Completed
 *(None yet)*
