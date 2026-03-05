@@ -244,6 +244,41 @@ resource "aws_lambda_function" "app" {
   }
 }
 
+resource "aws_lambda_function" "worker" {
+  function_name = "${var.app_name}-worker-${var.environment}"
+  role          = aws_iam_role.lambda.arn
+  package_type  = "Image"
+  image_uri     = "${aws_ecr_repository.app.repository_url}:latest"
+  
+  timeout       = 300
+  memory_size   = 512
+  architectures = ["arm64"]
+
+  vpc_config {
+    subnet_ids         = var.private_subnets
+    security_group_ids = [aws_security_group.lambda.id]
+  }
+
+  environment {
+    variables = {
+      ENVIRONMENT    = var.environment
+      S3_BUCKET_NAME = aws_s3_bucket.assets.id
+      DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
+      SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [image_uri]
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "worker_sqs" {
+  event_source_arn = aws_sqs_queue.app_queue.arn
+  function_name    = aws_lambda_function.worker.arn
+  batch_size       = 1
+}
+
 # Security group for Lambda
 resource "aws_security_group" "lambda" {
   name        = "${var.app_name}-lambda-sg-${var.environment}"
