@@ -143,6 +143,37 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
+# 🔒 Private Access to SSM (Prevents timeouts in private subnets)
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.ca-central-1.ssm"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  subnet_ids          = aws_subnet.private[*].id
+  security_group_ids  = [aws_security_group.vpc_endpoints.id]
+
+  tags = {
+    Name = "city-permit-ssm-endpoint-${var.environment}"
+  }
+}
+
+resource "aws_security_group" "vpc_endpoints" {
+  name        = "city-permit-vpce-sg-${var.environment}"
+  vpc_id      = aws_vpc.main.id
+  description = "Allow inbound from VPC for endpoints"
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  tags = {
+    Name = "city-permit-vpce-sg-${var.environment}"
+  }
+}
+
 output "vpc_id" {
   value = aws_vpc.main.id
 }

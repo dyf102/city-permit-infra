@@ -15,6 +15,7 @@ module "reviewer" {
   domain_name         = var.domain_name
   github_repo         = var.github_repo_reviewer
   github_access_token = var.github_access_token
+  platform            = "WEB" # SSR was problematic, switching to static
 }
 
 module "check" {
@@ -29,6 +30,8 @@ module "check" {
   domain_name         = var.domain_name
   github_repo         = var.github_repo_check
   github_access_token = var.github_access_token
+  platform            = "WEB"
+  gemini_api_key      = var.gemini_api_key
 }
 
 module "bootstrap_lambda" {

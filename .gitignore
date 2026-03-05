@@ -7,3 +7,4 @@
 *.zip
 package/
 response.json
+.worktrees/

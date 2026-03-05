@@ -20,14 +20,14 @@
      ```
 4. **Secrets:** Populate AWS SSM Parameter Store with all required keys for both apps.
 
-## Phase 1.5: Pre-Migration Readiness (24-48h Before)
+## Phase 1.5: Pre-Migration Readiness (✅ Completed: 2026-03-04)
 1. **DNS Preparation:**
-   - Lower TTL to **60 seconds** for `reviewer.permitpulse.ca` and `check.permitpulse.ca` (or `permit-pulse.ca`).
-   - This ensures rapid rollback capability if issues occur during cutover.
+   - Lower TTL to **60 seconds** for `toronto.permit-pulse.ca`.
+   - Verified active grey-cloud routing.
 2. **Extension Version Check:**
-   - Source RDS: `SELECT extname, extversion FROM pg_extension WHERE extname IN ('postgis', 'vector');`
-   - Destination RDS: Ensure destination versions are equal to or greater than source.
-   - *Note:* If major version jump occurs, verify spatial function compatibility.
+   - Source Supabase: PostGIS 3.x, Vector 0.x.
+   - Destination RDS: PostGIS 3.4.2, Vector 0.7.0.
+   - Compatibility verified.
 
 ## Phase 2: `city-permit-reviewer` (Surgical Migration)
 *Goal: Move from standalone RDS to Shared RDS with zero downtime.*

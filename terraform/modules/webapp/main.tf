@@ -1,50 +1,3 @@
-variable "app_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "vpc_id" {
-  type = string
-}
-
-variable "private_subnets" {
-  type = list(string)
-}
-
-variable "db_endpoint" {
-  type = string
-}
-
-variable "db_password" {
-  type      = string
-  sensitive = true
-}
-
-variable "db_name" {
-  type = string
-}
-
-variable "domain_name" {
-  type = string
-}
-
-variable "github_repo" {
-  type = string
-}
-
-variable "github_access_token" {
-  type      = string
-  sensitive = true
-}
-
-variable "platform" {
-  type    = string
-  default = "WEB"
-}
-
 locals {
   # Monorepo format for Next.js SSR (WEB_COMPUTE)
   build_spec_compute = <<-EOT
@@ -186,7 +139,14 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets" {
 
 data "aws_caller_identity" "current" {}
 
-# 3. IAM Role for Lambda
+# 3. SQS Queue
+resource "aws_sqs_queue" "app_queue" {
+  name                      = "${var.app_name}-queue-${var.environment}"
+  visibility_timeout_seconds = 300
+  message_retention_seconds  = 86400
+}
+
+# 4. IAM Role for Lambda
 resource "aws_iam_role" "lambda" {
   name = "${var.app_name}-lambda-role-${var.environment}"
 
@@ -239,12 +199,22 @@ resource "aws_iam_role_policy" "ssm" {
           aws_s3_bucket.assets.arn,
           "${aws_s3_bucket.assets.arn}/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ]
+        Resource = aws_sqs_queue.app_queue.arn
       }
     ]
   })
 }
 
-# 4. Lambda Function
+# 5. Lambda Function
 resource "aws_lambda_function" "app" {
   function_name = "${var.app_name}-api-${var.environment}"
   role          = aws_iam_role.lambda.arn
@@ -261,16 +231,58 @@ resource "aws_lambda_function" "app" {
   }
 
   environment {
-    variables = {
-      ENVIRONMENT    = var.environment
-      S3_BUCKET_NAME = aws_s3_bucket.assets.id
-      DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
-    }
+    variables = merge(
+      {
+        ENVIRONMENT    = var.environment
+        S3_BUCKET_NAME = aws_s3_bucket.assets.id
+        DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
+        SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
+      },
+      var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {}
+    )
   }
 
   lifecycle {
     ignore_changes = [image_uri]
   }
+}
+
+resource "aws_lambda_function" "worker" {
+  function_name = "${var.app_name}-worker-${var.environment}"
+  role          = aws_iam_role.lambda.arn
+  package_type  = "Image"
+  image_uri     = "${aws_ecr_repository.app.repository_url}:latest"
+  
+  timeout       = 300
+  memory_size   = 512
+  architectures = ["arm64"]
+
+  vpc_config {
+    subnet_ids         = var.private_subnets
+    security_group_ids = [aws_security_group.lambda.id]
+  }
+
+  environment {
+    variables = merge(
+      {
+        ENVIRONMENT    = var.environment
+        S3_BUCKET_NAME = aws_s3_bucket.assets.id
+        DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
+        SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
+      },
+      var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {}
+    )
+  }
+
+  lifecycle {
+    ignore_changes = [image_uri]
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "worker_sqs" {
+  event_source_arn = aws_sqs_queue.app_queue.arn
+  function_name    = aws_lambda_function.worker.arn
+  batch_size       = 1
 }
 
 # Security group for Lambda
@@ -286,7 +298,7 @@ resource "aws_security_group" "lambda" {
   }
 }
 
-# 5. API Gateway
+# 6. API Gateway
 resource "aws_api_gateway_rest_api" "main" {
   name = "${var.app_name}-api-${var.environment}"
 }
@@ -336,7 +348,7 @@ resource "aws_lambda_permission" "apigw" {
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
 
-# 6. AWS Amplify
+# 7. AWS Amplify
 resource "aws_amplify_app" "app" {
   name       = "${var.app_name}-frontend"
   repository = "https://github.com/${var.github_repo}"
