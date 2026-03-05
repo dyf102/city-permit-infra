@@ -7,6 +7,7 @@
 - [x] Scaffolding Shared Terraform Project [Small/Low] (Completed: 2026-03-04)
 - [x] Phase 0: Environment Cleanup [Medium/Medium] (Completed: 2026-03-04)
 - [x] Implement Shared Infrastructure Terraform Project [Small/Low] (Completed: 2026-03-04)
+- [x] Renamed root branch from master to main for consistency [Small/Low] (Completed: 2026-03-05)
 - [ ] Execute Migration Plan [Medium/Medium] (In-Progress: 2026-03-04)
     - [x] Phase 1: Infrastructure Preparation (Completed: 2026-03-04)
     - [ ] Phase 1.5: Pre-Migration DNS & Compatibility Verification (TTL 60s)
