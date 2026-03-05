@@ -57,7 +57,7 @@ module "monitoring" {
   source      = "../../modules/monitoring"
   environment = var.environment
   app_names   = ["city-permit-reviewer", "city-permit-check"]
-  
+
   providers = {
     aws.us_east_1 = aws.us_east_1
   }

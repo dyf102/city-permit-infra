@@ -60,19 +60,19 @@ resource "aws_security_group" "db" {
 }
 
 resource "aws_db_instance" "main" {
-  identifier           = "city-permit-shared-db-${var.environment}"
-  engine               = "postgres"
-  engine_version       = "16.6"
-  instance_class       = "db.t4g.micro" # ARM64 free tier eligible
-  allocated_storage    = 20
-  storage_type         = "gp3"
-  storage_encrypted    = true
-  db_name              = "postgres"
-  username             = "postgres"
-  password             = var.db_password
-  db_subnet_group_name = aws_db_subnet_group.main.name
+  identifier             = "city-permit-shared-db-${var.environment}"
+  engine                 = "postgres"
+  engine_version         = "16.6"
+  instance_class         = "db.t4g.micro" # ARM64 free tier eligible
+  allocated_storage      = 20
+  storage_type           = "gp3"
+  storage_encrypted      = true
+  db_name                = "postgres"
+  username               = "postgres"
+  password               = var.db_password
+  db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.db.id]
-  
+
   backup_retention_period = 7
   skip_final_snapshot     = false
   publicly_accessible     = false

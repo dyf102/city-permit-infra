@@ -1,8 +1,8 @@
 resource "aws_cloudfront_distribution" "toronto" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "Subpath routing for Toronto Permit Pulse"
-  aliases             = ["toronto.${var.domain_name}"]
+  enabled         = true
+  is_ipv6_enabled = true
+  comment         = "Subpath routing for Toronto Permit Pulse"
+  aliases         = ["toronto.${var.domain_name}"]
 
   # Origin 1: Reviewer App
   origin {
@@ -105,9 +105,9 @@ resource "aws_cloudfront_distribution" "toronto" {
   }
 
   custom_error_response {
-    error_code            = 404
-    response_code         = 200
-    response_page_path    = "/index.html"
+    error_code         = 404
+    response_code      = 200
+    response_page_path = "/index.html"
   }
 }
 

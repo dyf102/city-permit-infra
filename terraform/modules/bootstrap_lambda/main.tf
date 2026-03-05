@@ -90,7 +90,7 @@ resource "null_resource" "build_bootstrap_zip" {
   }
 
   depends_on = [local_file.bootstrap_handler]
-  
+
   # Re-run if handler changes
   triggers = {
     handler_hash = local_file.bootstrap_handler.content_sha256
@@ -116,7 +116,7 @@ resource "aws_lambda_function" "bootstrap" {
       DB_PASSWORD = var.db_password
     }
   }
-  
+
   depends_on = [null_resource.build_bootstrap_zip]
 }
 

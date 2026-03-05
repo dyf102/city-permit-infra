@@ -141,7 +141,7 @@ data "aws_caller_identity" "current" {}
 
 # 3. SQS Queue
 resource "aws_sqs_queue" "app_queue" {
-  name                      = "${var.app_name}-queue-${var.environment}"
+  name                       = "${var.app_name}-queue-${var.environment}"
   visibility_timeout_seconds = 300
   message_retention_seconds  = 86400
 }
@@ -220,7 +220,7 @@ resource "aws_lambda_function" "app" {
   role          = aws_iam_role.lambda.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.app.repository_url}:latest"
-  
+
   timeout       = 28
   memory_size   = 512
   architectures = ["arm64"]
@@ -252,7 +252,7 @@ resource "aws_lambda_function" "worker" {
   role          = aws_iam_role.lambda.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.app.repository_url}:latest"
-  
+
   timeout       = 300
   memory_size   = 512
   architectures = ["arm64"]
@@ -287,8 +287,8 @@ resource "aws_lambda_event_source_mapping" "worker_sqs" {
 
 # Security group for Lambda
 resource "aws_security_group" "lambda" {
-  name        = "${var.app_name}-lambda-sg-${var.environment}"
-  vpc_id      = var.vpc_id
+  name   = "${var.app_name}-lambda-sg-${var.environment}"
+  vpc_id = var.vpc_id
 
   egress {
     from_port   = 0
@@ -326,7 +326,7 @@ resource "aws_api_gateway_integration" "lambda" {
 }
 
 resource "aws_api_gateway_deployment" "main" {
-  depends_on = [aws_api_gateway_integration.lambda]
+  depends_on  = [aws_api_gateway_integration.lambda]
   rest_api_id = aws_api_gateway_rest_api.main.id
 
   lifecycle {
@@ -350,18 +350,18 @@ resource "aws_lambda_permission" "apigw" {
 
 # 7. AWS Amplify
 resource "aws_amplify_app" "app" {
-  name       = "${var.app_name}-frontend"
-  repository = "https://github.com/${var.github_repo}"
+  name         = "${var.app_name}-frontend"
+  repository   = "https://github.com/${var.github_repo}"
   access_token = var.github_access_token
-  
+
   platform = var.platform
 
   build_spec = var.platform == "WEB_COMPUTE" ? local.build_spec_compute : local.build_spec_static
 
   environment_variables = {
-    NEXT_PUBLIC_API_URL = aws_api_gateway_stage.prod.invoke_url
+    NEXT_PUBLIC_API_URL       = aws_api_gateway_stage.prod.invoke_url
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
-    AMPLIFY_DIFF_DEPLOY = "false"
+    AMPLIFY_DIFF_DEPLOY       = "false"
   }
 
   custom_rule {
