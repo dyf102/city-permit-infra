@@ -2,7 +2,7 @@
 resource "aws_iam_openid_connect_provider" "github" {
   url             = "https://token.actions.githubusercontent.com"
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1", "1c58a3a8518e8759bf075b76b750d4f2df264fcd"]
+  thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1", "1c58a3a8518e8759bf075b76b750d4f2df264fcd", "7560d6f40fa55195f740ee2b1b7c0b4836cbe103"]
 }
 
 # IAM Role for GitHub Actions
@@ -19,10 +19,13 @@ resource "aws_iam_role" "github_actions" {
           Federated = aws_iam_openid_connect_provider.github.arn
         }
         Condition = {
+          StringEquals = {
+            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+          }
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
               "repo:dyf102/city-permit-reviewer:*",
-              "repo:dyf102/city-permit-check:*"
+              "repo:dyf102/toronto-permit-pulse:*"
             ]
           }
         }
@@ -42,7 +45,13 @@ resource "aws_iam_role_policy" "github_actions_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ecr:GetAuthorizationToken",
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
@@ -51,7 +60,7 @@ resource "aws_iam_role_policy" "github_actions_policy" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload"
         ]
-        Resource = "*"
+        Resource = "arn:aws:ecr:ca-central-1:110428898775:repository/city-permit-*"
       },
       {
         Effect = "Allow"
@@ -60,7 +69,7 @@ resource "aws_iam_role_policy" "github_actions_policy" {
           "lambda:UpdateFunctionConfiguration",
           "lambda:GetFunctionConfiguration"
         ]
-        Resource = "arn:aws:lambda:ca-central-1:*:function:city-permit-*"
+        Resource = "arn:aws:lambda:ca-central-1:110428898775:function:city-permit-*"
       }
     ]
   })
