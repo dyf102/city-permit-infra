@@ -21,20 +21,20 @@ module "reviewer" {
 }
 
 module "check" {
-  source              = "../../modules/webapp"
-  app_name            = "city-permit-check"
-  environment         = var.environment
-  vpc_id              = module.networking.vpc_id
-  private_subnets     = module.networking.private_subnets
-  db_endpoint         = module.database.db_endpoint
-  db_password         = var.db_password
-  db_name             = "check_prod"
-  domain_name         = var.domain_name
-  github_repo         = var.github_repo_check
-  github_access_token = var.github_access_token
-  platform            = "WEB"
-  gemini_api_key      = var.gemini_api_key
-  use_function_url    = true
+  source               = "../../modules/webapp"
+  app_name             = "city-permit-check"
+  environment          = var.environment
+  vpc_id               = module.networking.vpc_id
+  private_subnets      = module.networking.private_subnets
+  db_endpoint          = module.database.db_endpoint
+  db_password          = var.db_password
+  db_name              = "check_prod"
+  domain_name          = var.domain_name
+  github_repo          = var.github_repo_check
+  github_access_token  = var.github_access_token
+  platform             = "WEB"
+  gemini_api_key       = var.gemini_api_key
+  use_function_url     = true
   recaptcha_site_key   = var.recaptcha_site_key
   recaptcha_secret_key = var.recaptcha_secret_key
 }
