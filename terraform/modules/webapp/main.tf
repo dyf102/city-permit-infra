@@ -406,6 +406,10 @@ output "api_endpoint" {
   value = aws_api_gateway_stage.prod.invoke_url
 }
 
+output "api_function_url" {
+  value = var.use_function_url ? aws_lambda_function_url.app[0].function_url : ""
+}
+
 output "lambda_sg_id" {
   value = aws_security_group.lambda.id
 }

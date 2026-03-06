@@ -14,6 +14,10 @@ output "check_api_endpoint" {
   value = module.check.api_endpoint
 }
 
+output "check_api_function_url" {
+  value = module.check.api_function_url
+}
+
 output "reviewer_amplify_domain" {
   value = module.reviewer.amplify_default_domain
 }

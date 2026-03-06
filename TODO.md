@@ -38,7 +38,7 @@
 - [x] Production E2E Smoke Tests (verified both subdomains/paths)
 
 ## Technical Debt / Backlog
-- [ ] Investigate 400 Bad Request on /api/v1/pipeline/stream in production [Medium/High]
+- [x] Investigate 400 Bad Request on /api/v1/pipeline/stream (Completed: 2026-03-06 — Fixed reCAPTCHA env var mapping and prod flag)
 - [ ] Test Stripe Payment integration in AWS production [Medium/Medium]
 - [x] Migrate `city-permit-check` from GCP to AWS [Medium/Medium] (Completed: 2026-03-05)
 - [ ] Consolidation of shared Python libraries between backends [Medium/Low]
