@@ -25,7 +25,8 @@ resource "aws_iam_role" "github_actions" {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
               "repo:dyf102/city-permit-reviewer:*",
-              "repo:dyf102/toronto-permit-pulse:*"
+              "repo:dyf102/toronto-permit-pulse:*",
+              "repo:dyf102/city-permit-check:*"
             ]
           }
         }

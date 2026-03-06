@@ -68,10 +68,13 @@ resource "aws_instance" "nat" {
     yum install -y iptables-services
     systemctl enable iptables
     systemctl start iptables
-    
+
     echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/custom-ip-forward.conf
     sysctl -p /etc/sysctl.d/custom-ip-forward.conf
-    
+
+    # Flush default FORWARD rules (Amazon Linux 2 ships with REJECT rule)
+    iptables -F FORWARD
+    iptables -P FORWARD ACCEPT
     iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     service iptables save
   EOT
