@@ -44,6 +44,19 @@ variable "gemini_api_key" {
   sensitive   = true
 }
 
+variable "recaptcha_site_key" {
+  type        = string
+  description = "reCAPTCHA Site Key"
+  default     = ""
+}
+
+variable "recaptcha_secret_key" {
+  type        = string
+  description = "reCAPTCHA Secret Key"
+  sensitive   = true
+  default     = ""
+}
+
 variable "stripe_secret_key" {
   type        = string
   description = "Stripe Secret Key"

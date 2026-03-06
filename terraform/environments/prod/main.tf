@@ -16,6 +16,8 @@ module "reviewer" {
   github_repo         = var.github_repo_reviewer
   github_access_token = var.github_access_token
   platform            = "WEB" # SSR was problematic, switching to static
+  recaptcha_site_key   = var.recaptcha_site_key
+  recaptcha_secret_key = var.recaptcha_secret_key
 }
 
 module "check" {
@@ -32,6 +34,8 @@ module "check" {
   github_access_token = var.github_access_token
   platform            = "WEB"
   gemini_api_key      = var.gemini_api_key
+  recaptcha_site_key   = var.recaptcha_site_key
+  recaptcha_secret_key = var.recaptcha_secret_key
 }
 
 module "bootstrap_lambda" {
