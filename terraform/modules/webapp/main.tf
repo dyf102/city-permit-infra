@@ -366,41 +366,45 @@ resource "aws_lambda_function_url" "app" {
   }
 }
 
-# 7. AWS Amplify (TEMPORARILY DISABLED DUE TO CREDENTIALS ISSUE)
-# resource "aws_amplify_app" "app" {
-#   name         = "${var.app_name}-frontend"
-#   repository   = "https://github.com/${var.github_repo}"
-#   access_token = var.github_access_token
+# 7. AWS Amplify
+resource "aws_amplify_app" "app" {
+  name         = "${var.app_name}-frontend"
+  repository   = "https://github.com/${var.github_repo}"
+  access_token = var.github_access_token
 
-#   platform = var.platform
+  platform = var.platform
 
-#   build_spec = var.platform == "WEB_COMPUTE" ? local.build_spec_compute : local.build_spec_static
+  build_spec = var.platform == "WEB_COMPUTE" ? local.build_spec_compute : local.build_spec_static
 
-#   environment_variables = {
-#     NEXT_PUBLIC_API_URL            = var.use_function_url ? aws_lambda_function_url.app[0].function_url : aws_api_gateway_stage.prod.invoke_url
-#     NEXT_PUBLIC_RECAPTCHA_SITE_KEY = var.recaptcha_site_key
-#     AMPLIFY_MONOREPO_APP_ROOT      = "frontend"
-#     AMPLIFY_DIFF_DEPLOY            = "false"
-#   }
+  environment_variables = {
+    NEXT_PUBLIC_API_URL            = var.use_function_url ? aws_lambda_function_url.app[0].function_url : aws_api_gateway_stage.prod.invoke_url
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY = var.recaptcha_site_key
+    AMPLIFY_MONOREPO_APP_ROOT      = "frontend"
+    AMPLIFY_DIFF_DEPLOY            = "false"
+  }
 
-#   custom_rule {
-#     source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}/<*>"
-#     target = "/<*>"
-#     status = "200"
-#   }
+  custom_rule {
+    source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}/<*>"
+    target = "/<*>"
+    status = "200"
+  }
 
-#   custom_rule {
-#     source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}"
-#     target = "/index.html"
-#     status = "200"
-#   }
-# }
+  custom_rule {
+    source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}"
+    target = "/index.html"
+    status = "200"
+  }
 
-# resource "aws_amplify_branch" "main" {
-#   app_id      = aws_amplify_app.app.id
-#   branch_name = "main"
-#   stage       = "PRODUCTION"
-# }
+  lifecycle {
+    ignore_changes = [access_token, repository]
+  }
+}
+
+resource "aws_amplify_branch" "main" {
+  app_id      = aws_amplify_app.app.id
+  branch_name = "main"
+  stage       = "PRODUCTION"
+}
 
 output "api_endpoint" {
   value = aws_api_gateway_stage.prod.invoke_url
@@ -415,11 +419,9 @@ output "lambda_sg_id" {
 }
 
 output "amplify_app_id" {
-  # value = aws_amplify_app.app.id
-  value = "disabled"
+  value = aws_amplify_app.app.id
 }
 
 output "amplify_default_domain" {
-  # value = "main.${aws_amplify_app.app.default_domain}"
-  value = "disabled"
+  value = "main.${aws_amplify_app.app.default_domain}"
 }
