@@ -23,6 +23,7 @@
     - [x] OIDC Trust Policy Fixed for toronto-permit-pulse repo
     - [x] CI Pipeline Fixed (Completed: 2026-03-05 — .eslintrc.json committed, stale deploy job removed)
     - [x] CORS Fix for toronto subdomain (Completed: 2026-03-05)
+- [x] Production E2E Smoke Tests for /check and /review (Completed: 2026-03-06)
 
 ## Completed
 - [x] Shared Infrastructure Design
@@ -34,6 +35,7 @@
 - [x] Application Deployment Stabilization (CORS fixes, CI/CD, OIDC)
 - [x] Reviewer Migration (Phase 2) — Supabase → Shared RDS
 - [x] Check Migration (Phase 3) — Schema, SQS, worker, Gemini API key
+- [x] Production E2E Smoke Tests (verified both subdomains/paths)
 
 ## Technical Debt / Backlog
 - [ ] Test Stripe Payment integration in AWS production [Medium/Medium]
