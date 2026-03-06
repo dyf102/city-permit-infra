@@ -366,6 +366,15 @@ resource "aws_lambda_function_url" "app" {
   }
 }
 
+resource "aws_lambda_permission" "function_url" {
+  count                  = var.use_function_url ? 1 : 0
+  statement_id           = "AllowFunctionUrlPublicAccess"
+  action                 = "lambda:InvokeFunctionUrl"
+  function_name          = aws_lambda_function.app.function_name
+  principal              = "*"
+  function_url_auth_type = "NONE"
+}
+
 # 7. AWS Amplify
 resource "aws_amplify_app" "app" {
   name         = "${var.app_name}-frontend"
