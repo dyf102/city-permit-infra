@@ -51,6 +51,11 @@ variable "gemini_api_key" {
   default   = ""
 }
 
+variable "use_function_url" {
+  type    = bool
+  default = false
+}
+
 variable "recaptcha_site_key" {
   type    = string
   default = ""

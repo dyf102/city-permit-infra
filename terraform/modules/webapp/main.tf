@@ -352,6 +352,20 @@ resource "aws_lambda_permission" "apigw" {
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
 
+resource "aws_lambda_function_url" "app" {
+  count              = var.use_function_url ? 1 : 0
+  function_name      = aws_lambda_function.app.function_name
+  authorization_type = "NONE"
+
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["*"]
+    allow_headers     = ["*"]
+    max_age           = 86400
+  }
+}
+
 # 7. AWS Amplify
 resource "aws_amplify_app" "app" {
   name         = "${var.app_name}-frontend"
@@ -363,10 +377,10 @@ resource "aws_amplify_app" "app" {
   build_spec = var.platform == "WEB_COMPUTE" ? local.build_spec_compute : local.build_spec_static
 
   environment_variables = {
-    NEXT_PUBLIC_API_URL          = aws_api_gateway_stage.prod.invoke_url
+    NEXT_PUBLIC_API_URL            = var.use_function_url ? aws_lambda_function_url.app[0].function_url : aws_api_gateway_stage.prod.invoke_url
     NEXT_PUBLIC_RECAPTCHA_SITE_KEY = var.recaptcha_site_key
-    AMPLIFY_MONOREPO_APP_ROOT    = "frontend"
-    AMPLIFY_DIFF_DEPLOY          = "false"
+    AMPLIFY_MONOREPO_APP_ROOT      = "frontend"
+    AMPLIFY_DIFF_DEPLOY            = "false"
   }
 
   custom_rule {
