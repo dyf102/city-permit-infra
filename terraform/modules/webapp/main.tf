@@ -368,7 +368,7 @@ resource "aws_lambda_function_url" "app" {
 
 resource "aws_lambda_permission" "function_url" {
   count                  = var.use_function_url ? 1 : 0
-  statement_id           = "AllowFunctionUrlPublicAccess"
+  statement_id           = "AllowFunctionUrlPublicAccess-${var.app_name}"
   action                 = "lambda:InvokeFunctionUrl"
   function_name          = aws_lambda_function.app.function_name
   principal              = "*"
