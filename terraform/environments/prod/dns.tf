@@ -3,7 +3,7 @@ resource "cloudflare_record" "acm_validation" {
   count = 1
 
   zone_id         = var.cloudflare_zone_id
-  name            = element(tolist(aws_acm_certificate.toronto.domain_validation_options), 0).resource_record_name
+  name            = replace(element(tolist(aws_acm_certificate.toronto.domain_validation_options), 0).resource_record_name, "/\\.$/", "")
   content         = element(tolist(aws_acm_certificate.toronto.domain_validation_options), 0).resource_record_value
   type            = element(tolist(aws_acm_certificate.toronto.domain_validation_options), 0).resource_record_type
   proxied         = false
