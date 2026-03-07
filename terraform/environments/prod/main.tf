@@ -91,3 +91,4 @@ resource "aws_ssm_parameter" "db_password" {
   value = var.db_password
 }
 # Triggering deployment after secret update
+# Job-level env vars enabled
