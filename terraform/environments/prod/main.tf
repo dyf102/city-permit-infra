@@ -93,3 +93,4 @@ resource "aws_ssm_parameter" "db_password" {
 # Triggering deployment after secret update
 # Job-level env vars enabled
 # Cloudflare IP restriction fix pending
+# Cloudflare IP restriction removed - Final deployment trigger
