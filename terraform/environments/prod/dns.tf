@@ -1,17 +1,13 @@
 # 1. Automate SSL Validation for CloudFront
 resource "cloudflare_record" "acm_validation" {
   for_each = {
-    for dvo in aws_acm_certificate.toronto.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
+    "toronto.${var.domain_name}" = 0
   }
 
   zone_id = var.cloudflare_zone_id
-  name    = each.value.name
-  value   = each.value.record
-  type    = each.value.type
+  name    = tolist(aws_acm_certificate.toronto.domain_validation_options)[0].resource_record_name
+  value   = tolist(aws_acm_certificate.toronto.domain_validation_options)[0].resource_record_value
+  type    = tolist(aws_acm_certificate.toronto.domain_validation_options)[0].resource_record_type
   proxied = false
 }
 
