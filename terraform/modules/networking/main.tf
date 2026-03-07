@@ -61,27 +61,69 @@ resource "aws_instance" "nat" {
   associate_public_ip_address = true
   source_dest_check           = false # Required for NAT
   vpc_security_group_ids      = [aws_security_group.nat.id]
+  iam_instance_profile        = aws_iam_instance_profile.nat.name
+  user_data_replace_on_change = true
 
-  # Persistent NAT setup
+  # Persistent NAT setup - more robust script
   user_data = <<-EOT
     #!/bin/bash
+    # Wait for network
+    sleep 5
+    
+    # Enable IP forwarding
+    echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/custom-ip-forward.conf
+    sysctl -p /etc/sysctl.d/custom-ip-forward.conf
+
+    # Install and configure iptables
     yum install -y iptables-services
     systemctl enable iptables
     systemctl start iptables
 
-    echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/custom-ip-forward.conf
-    sysctl -p /etc/sysctl.d/custom-ip-forward.conf
+    # Clean existing rules
+    iptables -F
+    iptables -t nat -F
+    iptables -X
 
-    # Flush default FORWARD rules (Amazon Linux 2 ships with REJECT rule)
-    iptables -F FORWARD
-    iptables -P FORWARD ACCEPT
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    # Set up masquerade
+    # We dynamically find the interface name (usually eth0)
+    INTERFACE=$(ip route | grep default | awk '{print $5}')
+    iptables -t nat -A POSTROUTING -o $INTERFACE -j MASQUERADE
+    iptables -A FORWARD -i $INTERFACE -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -j ACCEPT
+
+    # Save rules
     service iptables save
   EOT
 
   tags = {
-    Name = "city-permit-nat-instance-${var.environment}"
+    Name        = "city-permit-nat-instance-${var.environment}"
+    Environment = var.environment
   }
+}
+
+resource "aws_iam_role" "nat" {
+  name = "city-permit-nat-role-${var.environment}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "nat_ssm" {
+  role       = aws_iam_role.nat.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "nat" {
+  name = "city-permit-nat-profile-${var.environment}"
+  role = aws_iam_role.nat.name
 }
 
 resource "aws_security_group" "nat" {
