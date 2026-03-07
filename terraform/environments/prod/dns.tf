@@ -10,6 +10,11 @@ resource "cloudflare_record" "acm_validation" {
   allow_overwrite = true
 }
 
+import {
+  to = cloudflare_record.acm_validation[0]
+  id = "0219c4ec09c49f40bcd19e518cd9e0ac/9273b338f9931db54d62ed2a06a7add5"
+}
+
 # 2. Final Routing to CloudFront (Subpath router)
 resource "cloudflare_record" "toronto_app" {
   zone_id         = var.cloudflare_zone_id
@@ -18,4 +23,9 @@ resource "cloudflare_record" "toronto_app" {
   type            = "CNAME"
   proxied         = true
   allow_overwrite = true
+}
+
+import {
+  to = cloudflare_record.toronto_app
+  id = "0219c4ec09c49f40bcd19e518cd9e0ac/e9dd24226d8cfdb646152605841f3750"
 }
