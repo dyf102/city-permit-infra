@@ -90,3 +90,4 @@ resource "aws_ssm_parameter" "db_password" {
   type  = "SecureString"
   value = var.db_password
 }
+# Triggering deployment after secret update
