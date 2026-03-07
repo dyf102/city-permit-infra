@@ -382,9 +382,9 @@ resource "aws_amplify_app" "app" {
   build_spec = var.platform == "WEB_COMPUTE" ? local.build_spec_compute : local.build_spec_static
 
   environment_variables = {
-    NEXT_PUBLIC_API_URL            = var.use_function_url ? one(aws_lambda_function_url.app[*].function_url) : aws_api_gateway_stage.prod.invoke_url
-    AMPLIFY_MONOREPO_APP_ROOT      = "frontend"
-    AMPLIFY_DIFF_DEPLOY            = "false"
+    NEXT_PUBLIC_API_URL       = var.use_function_url ? one(aws_lambda_function_url.app[*].function_url) : aws_api_gateway_stage.prod.invoke_url
+    AMPLIFY_MONOREPO_APP_ROOT = "frontend"
+    AMPLIFY_DIFF_DEPLOY       = "false"
   }
 
   dynamic "custom_rule" {
@@ -417,7 +417,7 @@ output "api_endpoint" {
 }
 
 output "api_function_url" {
-  value = var.use_function_url ? aws_lambda_function_url.app[0].function_url : ""
+  value = var.use_function_url ? one(aws_lambda_function_url.app[*].function_url) : ""
 }
 
 output "lambda_sg_id" {
