@@ -406,9 +406,10 @@ resource "aws_amplify_app" "app" {
   }
 
   # 2. Catch-all SPA Fallback: /track/anything -> /track/index.html
+  # Explicitly using 200 rewrite to ensure nested paths load the index.
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
-    status = "404-200"
+    status = "200"
     target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
   }
 }
