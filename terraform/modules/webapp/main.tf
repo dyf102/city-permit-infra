@@ -392,41 +392,14 @@ resource "aws_amplify_app" "app" {
   }
 
   # Support for SPA routing and subpath stripping
-  # 1. Map assets: /explore/_next/<*> -> /_next/<*>
-  custom_rule {
-    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/_next/<*>"
-    status = "200"
-    target = "/_next/<*>"
-  }
+  # With distDir: "out/track", files are physical at /track/index.html etc.
 
-  # 2. Map static files with extensions: /explore/favicon.ico -> /favicon.ico
-  custom_rule {
-    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/<*>.{ico,png,json,txt,js,css,woff,woff2}"
-    status = "200"
-    target = "/<*>.{ico,png,json,txt,js,css,woff,woff2}"
-  }
-
-  # 3. Map common asset folders: /explore/images/<*> -> /images/<*>
-  custom_rule {
-    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/images/<*>"
-    status = "200"
-    target = "/images/<*>"
-  }
-
-  # 4. Handle base path: /explore -> /index.html
-  custom_rule {
-    source = var.app_base_path
-    status = "200"
-    target = "/index.html"
-  }
-
-  # 5. SPA Fallback: Rewrite missing routes to index.html
-  # This matches multi-segment paths like /explore/verdict/123
-  # Using status 200 to force the rewrite for all paths under the base_path
+  # 1. Catch-all SPA Fallback: /track/anything -> /track/index.html
+  # This handles both assets (if they exist) and dynamic routes.
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
-    status = "200"
-    target = "/index.html"
+    status = "404-200"
+    target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
   }
 }
 
