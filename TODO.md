@@ -25,7 +25,7 @@
     - [x] CORS Fix for toronto subdomain (Completed: 2026-03-05)
 - [x] Production E2E Smoke Tests for /check and /review (Completed: 2026-03-06)
 - [x] Restore and stabilize Amplify frontend deployments [Medium/High] (Completed: 2026-03-07 — Amplify apps created, build artifacts corrected)
-- [ ] Verify subpath routing and SSL validation via CloudFront and Cloudflare [Medium/Medium] (In-progress: CloudFront updated, Cloudflare records pending auth fix)
+- [x] Verify subpath routing and SSL validation via CloudFront and Cloudflare (Completed: 2026-03-07)
 
 ## Completed
 - [x] Shared Infrastructure Design
