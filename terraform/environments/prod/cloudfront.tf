@@ -6,8 +6,7 @@ resource "aws_cloudfront_distribution" "toronto" {
 
   # Origin 1: Reviewer App
   origin {
-    # domain_name = module.reviewer.amplify_default_domain
-    domain_name = "example.com"
+    domain_name = module.reviewer.amplify_default_domain
     origin_id   = "ReviewerApp"
     custom_origin_config {
       http_port              = 80
@@ -19,8 +18,7 @@ resource "aws_cloudfront_distribution" "toronto" {
 
   # Origin 2: Check App
   origin {
-    # domain_name = module.check.amplify_default_domain
-    domain_name = "example.org"
+    domain_name = module.check.amplify_default_domain
     origin_id   = "CheckApp"
     custom_origin_config {
       http_port              = 80
