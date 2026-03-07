@@ -408,7 +408,7 @@ resource "aws_amplify_app" "app" {
   # This works for any level of nesting.
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
-    status = "404-200"
+    status = "200"
     target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
   }
 }
