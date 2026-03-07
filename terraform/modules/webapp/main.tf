@@ -386,27 +386,10 @@ resource "aws_amplify_app" "app" {
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
     AMPLIFY_DIFF_DEPLOY       = "false"
   }
-
-  dynamic "custom_rule" {
-    for_each = var.app_name == "city-permit-reviewer" ? [1] : []
-    content {
-      source = "/review/<*>"
-      target = "/<*>"
-      status = "200"
-    }
-  }
-
-  dynamic "custom_rule" {
-    for_each = var.app_name == "city-permit-reviewer" ? [1] : []
-    content {
-      source = "/review"
-      target = "/index.html"
-      status = "200"
-    }
-  }
 }
 
 resource "aws_amplify_branch" "main" {
+
   app_id      = aws_amplify_app.app.id
   branch_name = "main"
   stage       = "PRODUCTION"
