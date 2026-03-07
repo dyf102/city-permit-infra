@@ -8,6 +8,8 @@ resource "aws_cloudfront_distribution" "toronto" {
   origin {
     domain_name = module.reviewer.amplify_default_domain
     origin_id   = "ReviewerApp"
+    origin_path = "/explore"
+
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -20,6 +22,8 @@ resource "aws_cloudfront_distribution" "toronto" {
   origin {
     domain_name = module.check.amplify_default_domain
     origin_id   = "CheckApp"
+    origin_path = "/track"
+
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -27,6 +31,7 @@ resource "aws_cloudfront_distribution" "toronto" {
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
+
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]

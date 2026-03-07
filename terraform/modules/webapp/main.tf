@@ -391,29 +391,15 @@ resource "aws_amplify_app" "app" {
     AMPLIFY_DIFF_DEPLOY       = "false"
   }
 
-  # Support for SPA routing and subpath stripping
-  # With distDir: "out/track", files are physical at /track/index.html etc.
-
-  # 1. Force trailing slash for the base path itself to avoid root 404s
-  # Only needed if app_base_path is not root
-  dynamic "custom_rule" {
-    for_each = var.app_base_path != "/" ? [1] : []
-    content {
-      source = var.app_base_path
-      status = "301"
-      target = "${var.app_base_path}/"
-    }
-  }
-
-  # 2. Catch-all SPA Fallback: /track/anything -> /track/index.html
-  # Explicitly using 200 rewrite to ensure nested paths load the index.
+  # Support for SPA routing
+  # CloudFront handles the subpath (e.g. /explore) via origin_path.
+  # Amplify sees requests as if they are at the root.
   custom_rule {
-    source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
+    source = "/<*>"
     status = "200"
-    target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
+    target = "/index.html"
   }
 }
-
 resource "aws_amplify_branch" "main" {
 
   app_id      = aws_amplify_app.app.id
