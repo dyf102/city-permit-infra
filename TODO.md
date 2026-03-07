@@ -24,8 +24,8 @@
     - [x] CI Pipeline Fixed (Completed: 2026-03-05 — .eslintrc.json committed, stale deploy job removed)
     - [x] CORS Fix for toronto subdomain (Completed: 2026-03-05)
 - [x] Production E2E Smoke Tests for /check and /review (Completed: 2026-03-06)
-- [ ] Restore and stabilize Amplify frontend deployments [Medium/High]
-- [ ] Verify subpath routing and SSL validation via CloudFront and Cloudflare [Medium/Medium]
+- [ ] Restore and stabilize Amplify frontend deployments [Medium/High] (In-progress: plan fixes applied, build artifacts corrected)
+- [ ] Verify subpath routing and SSL validation via CloudFront and Cloudflare [Medium/Medium] (In-progress: static keys used for DNS validation)
 
 ## Completed
 - [x] Shared Infrastructure Design
