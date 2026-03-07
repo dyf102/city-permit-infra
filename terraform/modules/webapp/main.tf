@@ -237,6 +237,7 @@ resource "aws_lambda_function" "app" {
         S3_BUCKET_NAME = aws_s3_bucket.assets.id
         DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
         SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
+        CORS_ORIGINS   = jsonencode(var.cors_origins)
       },
       var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {}
     )
@@ -269,6 +270,7 @@ resource "aws_lambda_function" "worker" {
         S3_BUCKET_NAME = aws_s3_bucket.assets.id
         DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
         SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
+        CORS_ORIGINS   = jsonencode(var.cors_origins)
       },
       var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {}
     )

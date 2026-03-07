@@ -61,3 +61,9 @@ variable "app_base_path" {
   description = "Base path for the application (e.g., /check or /review)"
   default     = "/"
 }
+
+variable "cors_origins" {
+  type        = list(string)
+  description = "Allowed origins for CORS"
+  default     = []
+}

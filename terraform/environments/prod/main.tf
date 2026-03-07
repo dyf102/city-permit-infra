@@ -17,6 +17,7 @@ module "reviewer" {
   github_access_token = var.github_access_token
   platform            = "WEB" # SSR was problematic, switching to static
   app_base_path       = "/explore"
+  cors_origins        = ["https://permit-pulse.ca", "https://www.permit-pulse.ca", "https://toronto.permit-pulse.ca"]
 }
 
 module "check" {
@@ -35,6 +36,7 @@ module "check" {
   gemini_api_key      = var.gemini_api_key
   use_function_url    = true
   app_base_path       = "/track"
+  cors_origins        = ["https://permit-pulse.ca", "https://www.permit-pulse.ca", "https://toronto.permit-pulse.ca"]
 }
 
 
