@@ -422,9 +422,10 @@ resource "aws_amplify_app" "app" {
 
   # 5. SPA Fallback: Rewrite missing routes to index.html
   # This matches multi-segment paths like /explore/verdict/123
+  # Using status 200 to force the rewrite for all paths under the base_path
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
-    status = "404-200"
+    status = "200"
     target = "/index.html"
   }
 }
