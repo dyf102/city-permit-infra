@@ -238,9 +238,7 @@ resource "aws_lambda_function" "app" {
         DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
         SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
       },
-      var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {},
-      var.recaptcha_site_key != "" ? { RECAPTCHA_SITE_KEY = var.recaptcha_site_key } : {},
-      var.recaptcha_secret_key != "" ? { RECAPTCHA_SECRET_KEY = var.recaptcha_secret_key } : {}
+      var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {}
     )
   }
 
@@ -272,9 +270,7 @@ resource "aws_lambda_function" "worker" {
         DATABASE_URL   = "postgresql+asyncpg://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
         SQS_QUEUE_URL  = aws_sqs_queue.app_queue.url
       },
-      var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {},
-      var.recaptcha_site_key != "" ? { RECAPTCHA_SITE_KEY = var.recaptcha_site_key } : {},
-      var.recaptcha_secret_key != "" ? { RECAPTCHA_SECRET_KEY = var.recaptcha_secret_key } : {}
+      var.gemini_api_key != "" ? { GOOGLE_API_KEY = var.gemini_api_key } : {}
     )
   }
 
@@ -387,7 +383,6 @@ resource "aws_lambda_permission" "function_url" {
 
 #   environment_variables = {
 #     NEXT_PUBLIC_API_URL            = var.use_function_url ? aws_lambda_function_url.app[0].function_url : aws_api_gateway_stage.prod.invoke_url
-#     NEXT_PUBLIC_RECAPTCHA_SITE_KEY = var.recaptcha_site_key
 #     AMPLIFY_MONOREPO_APP_ROOT      = "frontend"
 #     AMPLIFY_DIFF_DEPLOY            = "false"
 #   }

@@ -55,14 +55,3 @@ variable "use_function_url" {
   type    = bool
   default = false
 }
-
-variable "recaptcha_site_key" {
-  type    = string
-  default = ""
-}
-
-variable "recaptcha_secret_key" {
-  type      = string
-  sensitive = true
-  default   = ""
-}
