@@ -388,18 +388,41 @@ resource "aws_amplify_app" "app" {
   }
 
   # Support for SPA routing and subpath stripping
-  # Since CloudFront forwards the subpath (e.g. /track), but Next.js export
-  # puts files at the root of the artifact, we need to strip it or map it.
-
-  # 1. Map assets and routes: /track/<*> -> /<*>
-  # If base path is root, this rule is redundant but harmless.
+  # 1. Map assets: /track/_next/<*> -> /_next/<*>
   custom_rule {
-    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/<*>"
+    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/_next/<*>"
     status = "200"
-    target = var.app_base_path == "/" ? "/index.html" : "/<*>"
+    target = "/_next/<*>"
   }
 
-  # 2. Handle SPA navigation fallbacks (404 -> index.html)
+  # 2. Map static files: /track/favicon.ico -> /favicon.ico
+  custom_rule {
+    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/<*>.{ico,png,json,txt}"
+    status = "200"
+    target = "/<*>.{ico,png,json,txt}"
+  }
+
+  # 3. Map common asset folders
+  custom_rule {
+    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/images/<*>"
+    status = "200"
+    target = "/images/<*>"
+  }
+
+  # 4. Strip the subpath from anything else that looks like a file (has an extension)
+  custom_rule {
+    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/<*>.js"
+    status = "200"
+    target = "/<*>.js"
+  }
+
+  custom_rule {
+    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/<*>.css"
+    status = "200"
+    target = "/<*>.css"
+  }
+
+  # 5. SPA Fallback: Rewrite missing routes to index.html
   custom_rule {
     source = "/<*>"
     status = "404-200"
