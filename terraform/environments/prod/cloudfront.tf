@@ -48,9 +48,9 @@ resource "aws_cloudfront_distribution" "toronto" {
     max_ttl                = 86400
   }
 
-  # Route /review* to Reviewer App
+  # Route /explore* to Reviewer App
   ordered_cache_behavior {
-    path_pattern     = "/review*"
+    path_pattern     = "/explore*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "ReviewerApp"
@@ -70,9 +70,9 @@ resource "aws_cloudfront_distribution" "toronto" {
     max_ttl                = 86400
   }
 
-  # Route /check* to Check App
+  # Route /track* to Check App
   ordered_cache_behavior {
-    path_pattern     = "/check*"
+    path_pattern     = "/track*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "CheckApp"
