@@ -427,8 +427,9 @@ resource "aws_amplify_app" "app" {
   }
 
   # 5. SPA Fallback: Rewrite missing routes to index.html
+  # We only fallback for paths within our app_base_path to avoid collisions
   custom_rule {
-    source = "/<*>"
+    source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
     status = "404-200"
     target = "/index.html"
   }
