@@ -16,6 +16,7 @@ module "reviewer" {
   github_repo         = var.github_repo_reviewer
   github_access_token = var.github_access_token
   platform            = "WEB" # SSR was problematic, switching to static
+  app_base_path       = "/review"
 }
 
 module "check" {
@@ -33,6 +34,7 @@ module "check" {
   platform            = "WEB"
   gemini_api_key      = var.gemini_api_key
   use_function_url    = true
+  app_base_path       = "/check"
 }
 
 

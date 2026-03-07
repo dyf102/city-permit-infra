@@ -26,6 +26,7 @@
 - [x] Production E2E Smoke Tests for /check and /review (Completed: 2026-03-06)
 - [x] Restore and stabilize Amplify frontend deployments [Medium/High] (Completed: 2026-03-07 — Amplify apps created, build artifacts corrected)
 - [x] Verify subpath routing and SSL validation via CloudFront and Cloudflare (Completed: 2026-03-07)
+- [x] Fix Amplify subpath collision: removed global CloudFront 404 handler and added app-specific SPA rewrites (Completed: 2026-03-07)
 
 ## Completed
 - [x] Shared Infrastructure Design

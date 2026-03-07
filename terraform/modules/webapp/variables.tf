@@ -55,3 +55,9 @@ variable "use_function_url" {
   type    = bool
   default = false
 }
+
+variable "app_base_path" {
+  type        = string
+  description = "Base path for the application (e.g., /check or /review)"
+  default     = "/"
+}

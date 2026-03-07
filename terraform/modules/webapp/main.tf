@@ -386,6 +386,13 @@ resource "aws_amplify_app" "app" {
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
     AMPLIFY_DIFF_DEPLOY       = "false"
   }
+
+  # Support for SPA routing and subpath fallback
+  custom_rule {
+    source = "/<*>"
+    status = "404-200"
+    target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
+  }
 }
 
 resource "aws_amplify_branch" "main" {
