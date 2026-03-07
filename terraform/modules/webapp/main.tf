@@ -387,16 +387,22 @@ resource "aws_amplify_app" "app" {
     AMPLIFY_DIFF_DEPLOY            = "false"
   }
 
-  custom_rule {
-    source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}/<*>"
-    target = "/<*>"
-    status = "200"
+  dynamic "custom_rule" {
+    for_each = var.app_name == "city-permit-reviewer" ? [1] : []
+    content {
+      source = "/review/<*>"
+      target = "/<*>"
+      status = "200"
+    }
   }
 
-  custom_rule {
-    source = "/${var.app_name == "city-permit-reviewer" ? "review" : "check"}"
-    target = "/index.html"
-    status = "200"
+  dynamic "custom_rule" {
+    for_each = var.app_name == "city-permit-reviewer" ? [1] : []
+    content {
+      source = "/review"
+      target = "/index.html"
+      status = "200"
+    }
   }
 }
 
