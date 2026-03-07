@@ -1,0 +1,15 @@
+#!/bin/bash
+# Pre-commit hook to enforce terraform fmt
+
+echo "Running terraform fmt check..."
+# Run fmt check recursively
+terraform fmt -check -recursive terraform/
+
+if [ $? -ne 0 ]; then
+  echo "Error: Terraform files are not properly formatted."
+  echo "Please run 'terraform fmt -recursive terraform/' and stage the changes."
+  exit 1
+fi
+
+echo "Terraform formatting check passed."
+exit 0
