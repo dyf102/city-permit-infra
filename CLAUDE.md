@@ -36,6 +36,16 @@ terraform fmt -recursive ../../
 
 The bootstrap stack (`terraform/bootstrap/main.tf`) is a one-time setup for the S3 state bucket and DynamoDB lock table — do not re-apply it.
 
+## Git Hooks
+
+To enforce terraform formatting locally before committing, install the pre-commit hook:
+
+```bash
+./scripts/install-hooks.sh
+```
+
+This hook runs `terraform fmt -check -recursive terraform/` and will prevent commits if files are not properly formatted.
+
 ## Architecture
 
 ### Infrastructure Layout
