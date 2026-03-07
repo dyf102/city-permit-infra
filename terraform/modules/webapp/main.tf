@@ -387,11 +387,23 @@ resource "aws_amplify_app" "app" {
     AMPLIFY_DIFF_DEPLOY       = "false"
   }
 
-  # Support for SPA routing and subpath fallback
+  # Support for SPA routing and subpath stripping
+  # Since CloudFront forwards the subpath (e.g. /track), but Next.js export
+  # puts files at the root of the artifact, we need to strip it or map it.
+
+  # 1. Map assets and routes: /track/<*> -> /<*>
+  # If base path is root, this rule is redundant but harmless.
+  custom_rule {
+    source = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/<*>"
+    status = "200"
+    target = var.app_base_path == "/" ? "/index.html" : "/<*>"
+  }
+
+  # 2. Handle SPA navigation fallbacks (404 -> index.html)
   custom_rule {
     source = "/<*>"
     status = "404-200"
-    target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
+    target = "/index.html"
   }
 }
 
