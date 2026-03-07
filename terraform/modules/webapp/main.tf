@@ -394,8 +394,18 @@ resource "aws_amplify_app" "app" {
   # Support for SPA routing and subpath stripping
   # With distDir: "out/track", files are physical at /track/index.html etc.
 
-  # 1. Catch-all SPA Fallback: /track/anything -> /track/index.html
-  # This handles both assets (if they exist) and dynamic routes.
+  # 1. Force trailing slash for the base path itself to avoid root 404s
+  # Only needed if app_base_path is not root
+  dynamic "custom_rule" {
+    for_each = var.app_base_path != "/" ? [1] : []
+    content {
+      source = var.app_base_path
+      status = "301"
+      target = "${var.app_base_path}/"
+    }
+  }
+
+  # 2. Catch-all SPA Fallback: /track/anything -> /track/index.html
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
     status = "404-200"
