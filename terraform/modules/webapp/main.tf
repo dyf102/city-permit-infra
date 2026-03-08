@@ -405,9 +405,14 @@ resource "aws_amplify_app" "app" {
   }
 
   # 2. Asset Pass-through (High Priority)
-  # Ensure files with extensions (especially .txt for Next.js Flight) 
-  # are NOT rewritten to index.html if they don't exist.
-  # This returns a real 404 instead of a 200-HTML, which prevents router crashes.
+  # Map _next assets explicitly
+  custom_rule {
+    source = "${var.app_base_path}/_next/<*>"
+    status = "200"
+    target = "${var.app_base_path}/_next/<*>"
+  }
+
+  # Ensure other files with extensions are NOT rewritten to index.html
   custom_rule {
     source = "${var.app_base_path}/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
     status = "200"
