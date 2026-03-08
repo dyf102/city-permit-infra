@@ -392,7 +392,7 @@ resource "aws_amplify_app" "app" {
   }
 
   # Support for SPA routing and subpath resolution
-  # With distDir: "out/track", files are physical at /track/index.html etc.
+  # Static export puts _next/ at out root; basePath only affects HTML paths
 
   # 1. Force trailing slash for the base path itself
   dynamic "custom_rule" {
@@ -404,19 +404,20 @@ resource "aws_amplify_app" "app" {
     }
   }
 
-  # 2. Asset Pass-through (High Priority)
-  # Map _next assets explicitly
+  # 2. Asset Rewrite (High Priority)
+  # Next.js static export with basePath puts _next/ at the root of out/,
+  # but HTML references /basePath/_next/... — rewrite to strip the prefix
   custom_rule {
     source = "${var.app_base_path}/_next/<*>"
     status = "200"
-    target = "${var.app_base_path}/_next/<*>"
+    target = "/_next/<*>"
   }
 
-  # Ensure other files with extensions are NOT rewritten to index.html
+  # Same for other static files with extensions
   custom_rule {
     source = "${var.app_base_path}/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
     status = "200"
-    target = "${var.app_base_path}/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
+    target = "/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
   }
 
   # 3. Catch-all SPA Fallback (Lowest Priority)
