@@ -34,7 +34,7 @@ module "check" {
   github_access_token = var.github_access_token
   platform            = "WEB"
   gemini_api_key      = var.gemini_api_key
-  use_function_url    = true
+  use_function_url    = false
   app_base_path       = "/track"
   cors_origins        = ["https://permit-pulse.ca", "https://www.permit-pulse.ca", "https://toronto.permit-pulse.ca"]
 }
