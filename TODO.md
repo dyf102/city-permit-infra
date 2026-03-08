@@ -18,15 +18,16 @@
     - [x] CloudFront Path-Based Routing Configured
     - [x] Amplify Check App Build SUCCEEDED
     - [x] Backend Check Deploy SUCCEEDED
-    - [x] Amplify Reviewer App Build SUCCEEDED
     - [x] Backend Reviewer Deploy (Completed: 2026-03-05 — SSM migration done, Lambda active, API Gateway verified)
     - [x] OIDC Trust Policy Fixed for toronto-permit-pulse repo
     - [x] CI Pipeline Fixed (Completed: 2026-03-05 — .eslintrc.json committed, stale deploy job removed)
     - [x] CORS Fix for toronto subdomain (Completed: 2026-03-05)
-- [x] Production E2E Smoke Tests for /check and /review (Completed: 2026-03-06)
+- [x] Production E2E Smoke Tests for /track and /explore (Completed: 2026-03-06)
 - [x] Restore and stabilize Amplify frontend deployments [Medium/High] (Completed: 2026-03-07 — Amplify apps created, build artifacts corrected)
-- [x] Verify subpath routing and SSL validation via CloudFront and Cloudflare (Completed: 2026-03-07)
-- [x] Fix Amplify subpath collision: removed global CloudFront 404 handler and added app-specific SPA rewrites (Completed: 2026-03-07)
+- [x] Rename routes to /explore (Verdict) and /track (Pulse) [Small/Low] (Completed: 2026-03-07)
+- [x] Fix Amplify subpath collision & nested 404s [Medium/High] (Completed: 2026-03-07 — High-precision SPA rewrites implemented)
+- [x] Implement backend-proxied Google Maps autocomplete with Nominatim fallback [Medium/Medium] (Completed: 2026-03-07)
+- [x] Force backend secret synchronization from AWS SSM on startup [Small/Low] (Completed: 2026-03-07)
 
 ## Completed
 - [x] Shared Infrastructure Design
@@ -39,6 +40,9 @@
 - [x] Reviewer Migration (Phase 2) — Supabase → Shared RDS
 - [x] Check Migration (Phase 3) — Schema, SQS, worker, Gemini API key
 - [x] Production E2E Smoke Tests (verified both subdomains/paths)
+- [x] Action-Oriented Route Renaming (/explore & /track)
+- [x] High-Precision Amplify Rewrites for Deep Nesting
+- [x] Unified AWS Profile Enforcement
 
 ## Technical Debt / Backlog
 - [x] Investigate 400 Bad Request on /api/v1/pipeline/stream (Completed: 2026-03-07 — Feature removed entirely to resolve infrastructure lockout)
