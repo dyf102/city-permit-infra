@@ -404,12 +404,12 @@ resource "aws_amplify_app" "app" {
     }
   }
 
-  # 2. Catch-all SPA Fallback: /track/anything -> /track/index.html
-  # This works for any level of nesting.
+  # 2. Catch-all SPA Fallback: /track/anything -> /index.html
+  # We strip the subpath when serving the index so Next.js handles it internally
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
     status = "200"
-    target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
+    target = "/index.html"
   }
 }
 resource "aws_amplify_branch" "main" {
