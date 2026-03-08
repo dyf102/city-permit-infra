@@ -421,10 +421,11 @@ resource "aws_amplify_app" "app" {
 
   # 3. Catch-all SPA Fallback (Lowest Priority)
   # Only rewrite paths that look like routes (no extension)
+  # Target must be /index.html (absolute root) to allow Next.js basePath to handle the URL correctly
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
     status = "200"
-    target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
+    target = "/index.html"
   }
 }
 
