@@ -404,14 +404,25 @@ resource "aws_amplify_app" "app" {
     }
   }
 
-  # 2. Catch-all SPA Fallback: /track/anything -> /track/index.html
-  # Target must be subpath-aware because of distDir nesting.
+  # 2. Asset Pass-through (High Priority)
+  # Ensure files with extensions (especially .txt for Next.js Flight) 
+  # are NOT rewritten to index.html if they don't exist.
+  # This returns a real 404 instead of a 200-HTML, which prevents router crashes.
+  custom_rule {
+    source = "${var.app_base_path}/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
+    status = "200"
+    target = "${var.app_base_path}/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
+  }
+
+  # 3. Catch-all SPA Fallback (Lowest Priority)
+  # Only rewrite paths that look like routes (no extension)
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
     status = "200"
     target = var.app_base_path == "/" ? "/index.html" : "${var.app_base_path}/index.html"
   }
 }
+
 resource "aws_amplify_branch" "main" {
 
   app_id      = aws_amplify_app.app.id
