@@ -30,11 +30,6 @@ variable "db_name" {
   type        = string
 }
 
-variable "ecr_repo_url" {
-  description = "The ECR repository URL for the Lambda image"
-  type        = string
-}
-
 variable "s3_bucket_name" {
   description = "The name of the S3 bucket for assets"
   type        = string

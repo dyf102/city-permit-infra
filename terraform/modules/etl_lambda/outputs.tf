@@ -7,3 +7,8 @@ output "lambda_arn" {
   description = "The ARN of the ETL Lambda function"
   value       = aws_lambda_function.etl_lambda.arn
 }
+
+output "ecr_repo_url" {
+  description = "The ECR repository URL for the ETL Lambda image"
+  value       = aws_ecr_repository.etl.repository_url
+}

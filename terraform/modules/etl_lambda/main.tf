@@ -88,11 +88,21 @@ resource "aws_security_group" "etl_lambda_sg" {
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+resource "aws_ecr_repository" "etl" {
+  name                 = "city-zoning-etl"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
 resource "aws_lambda_function" "etl_lambda" {
   function_name = "etl-worker-${var.environment}"
   role          = aws_iam_role.etl_lambda_role.arn
   package_type  = "Image"
-  image_uri     = "${var.ecr_repo_url}:latest" # Assumes 'latest' tag for simplicity
+  image_uri     = "${aws_ecr_repository.etl.repository_url}:latest" # Assumes 'latest' tag for simplicity
   timeout       = 600
   memory_size   = 2048
   architectures = ["arm64"]
@@ -248,4 +258,70 @@ resource "aws_lambda_permission" "allow_cloudwatch_aic" {
   function_name = aws_lambda_function.etl_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.aic_nightly.arn
+}
+
+# Violations (daily)
+resource "aws_cloudwatch_event_rule" "violations_nightly" {
+  name                = "etl-violations-nightly-${var.environment}"
+  description         = "Triggers ETL Lambda for building violations data nightly"
+  schedule_expression = "cron(0 6 * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "violations_target" {
+  rule      = aws_cloudwatch_event_rule.violations_nightly.name
+  arn       = aws_lambda_function.etl_lambda.arn
+  input     = jsonencode({ "job" : "violations" })
+  target_id = "etl-violations"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_violations" {
+  statement_id  = "AllowExecutionFromCloudWatchViolations"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.etl_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.violations_nightly.arn
+}
+
+# Parcel (weekly - large dataset)
+resource "aws_cloudwatch_event_rule" "parcel_weekly" {
+  name                = "etl-parcel-weekly-${var.environment}"
+  description         = "Triggers ETL Lambda for parcel fabric data weekly"
+  schedule_expression = "cron(0 4 ? * SUN *)"
+}
+
+resource "aws_cloudwatch_event_target" "parcel_target" {
+  rule      = aws_cloudwatch_event_rule.parcel_weekly.name
+  arn       = aws_lambda_function.etl_lambda.arn
+  input     = jsonencode({ "job" : "parcel" })
+  target_id = "etl-parcel"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_parcel" {
+  statement_id  = "AllowExecutionFromCloudWatchParcel"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.etl_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.parcel_weekly.arn
+}
+
+# CoA (weekly)
+resource "aws_cloudwatch_event_rule" "coa_weekly" {
+  name                = "etl-coa-weekly-${var.environment}"
+  description         = "Triggers ETL Lambda for Committee of Adjustment applications weekly"
+  schedule_expression = "cron(0 5 ? * SUN *)"
+}
+
+resource "aws_cloudwatch_event_target" "coa_target" {
+  rule      = aws_cloudwatch_event_rule.coa_weekly.name
+  arn       = aws_lambda_function.etl_lambda.arn
+  input     = jsonencode({ "job" : "coa" })
+  target_id = "etl-coa"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_coa" {
+  statement_id  = "AllowExecutionFromCloudWatchCoA"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.etl_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.coa_weekly.arn
 }

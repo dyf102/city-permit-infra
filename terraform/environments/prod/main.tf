@@ -47,7 +47,6 @@ module "etl_lambda" {
   db_endpoint     = module.database.db_endpoint
   db_password     = var.db_password
   db_name         = "reviewer_prod"
-  ecr_repo_url    = module.reviewer.ecr_repo_url
   s3_bucket_name  = module.reviewer.s3_bucket_name
 }
 
