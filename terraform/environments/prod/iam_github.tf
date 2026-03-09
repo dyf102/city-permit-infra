@@ -26,7 +26,8 @@ resource "aws_iam_role" "github_actions" {
             "token.actions.githubusercontent.com:sub" = [
               "repo:dyf102/city-permit-reviewer:*",
               "repo:dyf102/toronto-permit-pulse:*",
-              "repo:dyf102/city-permit-check:*"
+              "repo:dyf102/city-permit-check:*",
+              "repo:dyf102/city-zoning-etl:*"
             ]
           }
         }
@@ -61,7 +62,10 @@ resource "aws_iam_role_policy" "github_actions_policy" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload"
         ]
-        Resource = "arn:aws:ecr:ca-central-1:110428898775:repository/city-permit-*"
+        Resource = [
+          "arn:aws:ecr:ca-central-1:110428898775:repository/city-permit-*",
+          "arn:aws:ecr:ca-central-1:110428898775:repository/city-zoning-etl"
+        ]
       },
       {
         Effect = "Allow"
@@ -70,7 +74,10 @@ resource "aws_iam_role_policy" "github_actions_policy" {
           "lambda:UpdateFunctionConfiguration",
           "lambda:GetFunctionConfiguration"
         ]
-        Resource = "arn:aws:lambda:ca-central-1:110428898775:function:city-permit-*"
+        Resource = [
+          "arn:aws:lambda:ca-central-1:110428898775:function:city-permit-*",
+          "arn:aws:lambda:ca-central-1:110428898775:function:etl-worker-*"
+        ]
       }
     ]
   })
