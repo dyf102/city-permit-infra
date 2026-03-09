@@ -39,6 +39,18 @@ module "check" {
   cors_origins        = ["https://permit-pulse.ca", "https://www.permit-pulse.ca", "https://toronto.permit-pulse.ca"]
 }
 
+module "etl_lambda" {
+  source          = "../../modules/etl_lambda"
+  environment     = var.environment
+  vpc_id          = module.networking.vpc_id
+  private_subnets = module.networking.private_subnets
+  db_endpoint     = module.database.db_endpoint
+  db_password     = var.db_password
+  db_name         = "reviewer_prod"
+  ecr_repo_url    = module.reviewer.ecr_repo_url
+  s3_bucket_name  = module.reviewer.s3_bucket_name
+}
+
 
 
 module "bootstrap_lambda" {

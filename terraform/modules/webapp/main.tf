@@ -420,13 +420,14 @@ resource "aws_amplify_app" "app" {
     target = "/<*>.{js,css,txt,ico,png,svg,jpg,json,woff,woff2}"
   }
 
-  # 3. Catch-all SPA Fallback (Lowest Priority)
-  # Only rewrite paths that look like routes (no extension)
-  # Target must be /index.html (absolute root) to allow Next.js basePath to handle the URL correctly
+  # 3. Catch-all Path Rewrite (Lowest Priority)
+  # Strip basePath prefix so Amplify serves each route's own HTML file.
+  # Next.js App Router static export produces per-route HTML with embedded RSC data;
+  # routing to /index.html would always serve the landing page instead.
   custom_rule {
     source = var.app_base_path == "/" ? "/<*>" : "${var.app_base_path}/<*>"
     status = "200"
-    target = "/index.html"
+    target = "/<*>"
   }
 }
 
@@ -456,3 +457,12 @@ output "amplify_app_id" {
 output "amplify_default_domain" {
   value = "main.${aws_amplify_app.app.default_domain}"
 }
+
+output "ecr_repo_url" {
+  value = aws_ecr_repository.app.repository_url
+}
+
+output "s3_bucket_name" {
+  value = aws_s3_bucket.assets.id
+}
+
