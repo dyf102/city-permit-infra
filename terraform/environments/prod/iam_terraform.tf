@@ -128,7 +128,8 @@ resource "aws_iam_role_policy" "terraform_policy" {
         Effect = "Allow"
         Action = [
           "cloudwatch:*",
-          "logs:*"
+          "logs:*",
+          "events:*"
         ]
         Resource = "*"
       },
