@@ -43,13 +43,11 @@
 - [x] Action-Oriented Route Renaming (/explore & /track)
 - [x] High-Precision Amplify Rewrites for Deep Nesting
 - [x] Unified AWS Profile Enforcement
+- [x] Fix agent validation error in `code-reviewer.md` (2026-03-10)
+- [x] Liability label overhaul in PDF and UI (2026-03-10)
+- [x] Math engine parameter mapping fix (2026-03-10)
+- [x] Integrated real parcel data and spatial lookups (2026-03-10)
 
 ## Technical Debt / Backlog
-- [x] Fix validation error in `code-reviewer.md` agent tool name (Completed: 2026-03-10)
-- [x] Address liability labels in PDF report and VerdictBadge (Completed: 2026-03-10)
-- [x] Correct math_engine.py parameter mapping (Completed: 2026-03-10)
-- [x] Integrate real parcel data and multi-layer spatial lookups (Completed: 2026-03-10)
-- [x] Investigate 400 Bad Request on /api/v1/pipeline/stream (Completed: 2026-03-07 — Feature removed entirely to resolve infrastructure lockout)
 - [ ] Test Stripe Payment integration in AWS production [Medium/Medium]
-- [x] Migrate `city-permit-check` from GCP to AWS [Medium/Medium] (Completed: 2026-03-05)
 - [ ] Consolidation of shared Python libraries between backends [Medium/Low]
