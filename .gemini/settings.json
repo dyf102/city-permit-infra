@@ -1,0 +1,13 @@
+{
+  "experimental": {
+    "enableAgents": true
+  },
+  "mcpServers": {
+    "codex": {
+      "command": "codex",
+      "args": [
+        "mcp-server"
+      ]
+    }
+  }
+}
