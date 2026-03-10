@@ -67,7 +67,7 @@ module "database" {
   private_subnets = module.networking.private_subnets
   db_password     = var.db_password
   environment     = var.environment
-  lambda_sg_ids   = [module.reviewer.lambda_sg_id, module.check.lambda_sg_id]
+  lambda_sg_ids   = [module.reviewer.lambda_sg_id, module.check.lambda_sg_id, module.etl_lambda.security_group_id]
   bootstrap_sg_id = module.bootstrap_lambda.security_group_id
 }
 
