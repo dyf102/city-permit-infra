@@ -104,7 +104,7 @@ resource "aws_lambda_function" "etl_lambda" {
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.etl.repository_url}:latest" # Assumes 'latest' tag for simplicity
   timeout       = 600
-  memory_size   = 4096
+  memory_size   = 3008
   architectures = ["arm64"]
   ephemeral_storage {
     size = 1024
