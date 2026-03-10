@@ -8,3 +8,4 @@
 package/
 response.json
 .worktrees/
+.pdf_venv/
