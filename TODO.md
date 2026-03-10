@@ -45,7 +45,9 @@
 - [x] Unified AWS Profile Enforcement
 
 ## Technical Debt / Backlog
-- [ ] Fix validation error in `code-reviewer.md` agent tool name [Small/Low]
+- [x] Fix validation error in `code-reviewer.md` agent tool name (Completed: 2026-03-10)
+- [x] Address liability labels in PDF report and VerdictBadge (Completed: 2026-03-10)
+- [x] Correct math_engine.py parameter mapping (Completed: 2026-03-10)
 - [x] Investigate 400 Bad Request on /api/v1/pipeline/stream (Completed: 2026-03-07 — Feature removed entirely to resolve infrastructure lockout)
 - [ ] Test Stripe Payment integration in AWS production [Medium/Medium]
 - [x] Migrate `city-permit-check` from GCP to AWS [Medium/Medium] (Completed: 2026-03-05)
