@@ -1,6 +1,7 @@
 # City Permit Infra TODO
 
 ## Tasks
+- [x] Upgrade RDS PostgreSQL to 16.6 to meet AWS support deadline [Small/Low] (Completed: 2026-03-10)
 - [x] Create Shared Infrastructure Design [Small/Low] (Completed: 2026-03-04)
 - [x] Create Migration Plan [Small/Low] (Completed: 2026-03-04)
 - [x] Create Deployment Plan [Small/Low] (Completed: 2026-03-04)
