@@ -117,11 +117,12 @@ resource "aws_lambda_function" "etl_lambda" {
 
   environment {
     variables = {
-      ENVIRONMENT = var.environment
-      DB_ENDPOINT = var.db_endpoint
-      DB_PASSWORD = var.db_password
-      DB_NAME     = var.db_name
-      S3_BUCKET   = var.s3_bucket_name
+      ENVIRONMENT  = var.environment
+      DB_ENDPOINT  = var.db_endpoint
+      DB_PASSWORD  = var.db_password
+      DB_NAME      = var.db_name
+      DATABASE_URL = "postgresql://postgres:${var.db_password}@${var.db_endpoint}/${var.db_name}"
+      S3_BUCKET    = var.s3_bucket_name
       # Add other environment variables as needed by your ETL process
     }
   }
