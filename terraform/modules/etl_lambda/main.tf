@@ -103,7 +103,7 @@ resource "aws_lambda_function" "etl_lambda" {
   role          = aws_iam_role.etl_lambda_role.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.etl.repository_url}:latest" # Assumes 'latest' tag for simplicity
-  timeout       = 600
+  timeout       = 900
   memory_size   = 3008
   architectures = ["arm64"]
   ephemeral_storage {
