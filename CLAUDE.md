@@ -57,7 +57,7 @@ terraform/
 │   ├── main.tf         # Module instantiation (networking, database, 2x webapp, bootstrap_lambda, monitoring)
 │   ├── iam_github.tf   # GitHub OIDC provider + deploy role
 │   ├── acm.tf          # ACM cert (us-east-1, for CloudFront)
-│   ├── cloudfront.tf   # Path-based routing: /review* → reviewer, /check* → check
+│   ├── cloudfront.tf   # Path-based routing: /explore* → reviewer, /track* → check
 │   └── dns.tf          # Cloudflare DNS records
 ├── modules/
 │   ├── networking/     # VPC, subnets, NAT instance, SSM endpoint
@@ -76,7 +76,7 @@ terraform/
 - **SSM Parameter Store** (free) for secrets, not Secrets Manager ($0.40/secret/mo)
 - **Lambda on arm64** with container images from ECR, 512MB memory, 28s timeout
 - **Amplify** hosts frontends (static Next.js export), auto-deploys on push to `main`
-- **CloudFront** does path-based routing (`/review*` → reviewer app, `/check*` → check app)
+- **CloudFront** does path-based routing (`/explore*` → reviewer app, `/track*` → check app)
 - **GitHub OIDC** — no long-lived AWS credentials; CI uses `github-actions-deploy-role`
 
 ### AWS Region & Account
@@ -93,9 +93,9 @@ terraform/
 
 ### Domain & Routing
 
-- Domain: `permitpulse.ca` (DNS on Cloudflare)
-- CloudFront alias: `toronto.permitpulse.ca`
-- Amplify origins route through CloudFront with path-based cache behaviors
+- Domain: `permit-pulse.ca` (DNS on Cloudflare)
+- CloudFront alias: `toronto.permit-pulse.ca`
+- Amplify origins route through CloudFront with path-based cache behaviors (`/explore*` → reviewer, `/track*` → check)
 
 ### CI/CD
 
